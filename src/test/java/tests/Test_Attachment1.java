@@ -25,6 +25,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import utils.EmailUtils;
+import utils.HandleAttachments;
 
 public class Test_Attachment1 {
 	
@@ -42,70 +43,30 @@ public class Test_Attachment1 {
 	    System.out.println("Connection to mail succeded");
 	 }
 	 @Test
-	 public void downloadAttachmentsReceiver() {
-		String saveDirectory;
-		receiverEmail.setSaveDirectory("/src/test/resources/attachments/receiver");
-		saveDirectory= receiverEmail.getSaveDirectory();
-		 
-	   
-	            // fetches new messages from server
-	            
-	            Message[] messages = receiverEmail.getAllMessages();
-	            Message message = messages[messages.length-1];
-	    
-	  
-	           Address[] fromAddress = message.getFrom();
-	           String from = fromAddress[0].toString();
-	           String subject = message.getSubject();
-	           String sentDate = message.getSentDate().toString();
-	           String contentType = message.getContentType();
-	           String messageContent = "";
-	 
-	                // store attachment file name, separated by comma
-	                String attachFiles = "";
-	 
-	                if (contentType.contains("multipart")) {
-	                    // content may contain attachments
-	                    Multipart multiPart = (Multipart) message.getContent();
-	                    int numberOfParts = multiPart.getCount();
-	                    for (int partCount = 0; partCount < numberOfParts; partCount++) {
-	                        MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
-	                        if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-	                            // this part is attachment
-	                            String fileName = part.getFileName();
-	                            attachFiles += fileName + ", ";
-	                            part.saveFile(saveDirectory + File.separator + fileName);
-	                        } else {
-	                            // this part may be the message content
-	                            messageContent = part.getContent().toString();
-	                        }
-	                    }
-	 
-	                    if (attachFiles.length() > 1) {
-	                        attachFiles = attachFiles.substring(0, attachFiles.length() - 2);
-	                    }
-	                } else if (contentType.contains("text/plain")
-	                        || contentType.contains("text/html")) {
-	                    Object content = message.getContent();
-	                    if (content != null) {
-	                        messageContent = content.toString();
-	                    }
-	                }
-	 
-	                // print out details of each message
-	                System.out.println("Message #" + (i + 1) + ":");
-	              /*  System.out.println("\t From: " + from);
-	                System.out.println("\t Subject: " + subject);
-	                System.out.println("\t Sent Date: " + sentDate);
-	                System.out.println("\t Message: " + messageContent);
-	                System.out.println("\t Attachments: " + attachFiles);*/
-	          
-		 
-		 
+	 public void verifyAttachmentReceivedMail() {
+	HandleAttachments attach = new HandleAttachments();
+	 try {
+		attach.downloadAttachments(receiverEmail,"receiver");
+	} catch (MessagingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	 }
-	 
-	
-	
-	
+	 @Test
+	 public void verifyAttachmentSentMail() {
+			HandleAttachments attach = new HandleAttachments();
+			 try {
+				attach.downloadAttachments(senderEmail,"sender");
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 }
 
 }

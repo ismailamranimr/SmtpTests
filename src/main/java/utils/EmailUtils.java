@@ -95,7 +95,15 @@ public class EmailUtils {
 
   //************* GET EMAIL PROPERTIES *******************
 
-  public static String getEmailAddressFromProperties(){
+  public Folder getFolder() {
+	return folder;
+}
+
+public void setFolder(Folder folder) {
+	this.folder = folder;
+}
+
+public static String getEmailAddressFromProperties(){
     return System.getProperty("email.address");
   }
 
@@ -270,8 +278,7 @@ public class EmailUtils {
     }
     return null;
   }
-
-
+ 
   public void setSaveDirectory(String dir) {
       this.saveDirectory = dir;
   }
